@@ -133,7 +133,8 @@ export async function parseForm<
       : await request.clone().formData();
     const data = await parseFormData(formData, options?.parser);
     const finalSchema = schema instanceof ZodType ? schema : z.object(schema);
-    return finalSchema.parse(data);
+    const parsedData = await finalSchema.parseAsync(data);
+    return parsedData;
   } catch (error) {
     throw createErrorResponse(options);
   }
@@ -158,7 +159,8 @@ export async function parseFormSafe<
     : await request.clone().formData();
   const data = await parseFormData(formData, options?.parser);
   const finalSchema = schema instanceof ZodType ? schema : z.object(schema);
-  return finalSchema.safeParse(data) as SafeParsedData<T>;
+  const parsedData = await finalSchema.safeParseAsync(data);
+  return parsedData as SafeParsedData<T>;
 }
 
 /**
